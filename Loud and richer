@@ -1,0 +1,50 @@
+// Approach 1 -> 
+class Solution {
+public:
+    void dfs(int node, vector<vector<int>>& adjList, vector<int>& rich, vector<int>& vis)
+    {
+        vis[node]=1;
+        rich.push_back(node);
+        for(auto it : adjList[node])
+        {
+            if(!vis[it])
+            {
+                dfs(it, adjList, rich, vis);
+            }
+        }
+        return;
+    }
+
+    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
+        int V=quiet.size();
+        vector<vector<int>> adjList(V);
+        for(int i=0; i<richer.size(); i++)
+        {
+            adjList[richer[i][1]].push_back(richer[i][0]);
+        }
+
+        vector<vector<int>> richList(V);
+        for(int i=0; i<V; i++)
+        {
+            vector<int> rich;
+            vector<int> vis(V, 0);
+            dfs(i, adjList, rich, vis);
+            richList[i] = rich;
+        }
+        vector<int> answer(V, -1);
+
+        for(int i=0; i<richList.size(); i++)
+        {
+            int quieter=INT_MAX;
+            for(auto j: richList[i])
+            {
+                if(quieter>quiet[j])
+                {
+                    quieter=quiet[j];
+                    answer[i]=j;
+                }
+            }
+        }
+        return answer;
+    }
+};
