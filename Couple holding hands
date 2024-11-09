@@ -1,0 +1,85 @@
+// Approach 1 -> 
+
+class Solution {
+public:
+    int minSwapsCouples(vector<int>& row) {
+        int count=0;
+        int even=1;
+        int i=0;
+        while(i<row.size())
+        {
+            if(row[i]%2!=0)
+            {
+                even=0;
+            }
+            else{
+                even=1;
+            }
+
+            if(even==0 && row[i]-1==row[i+1])
+            {
+                i=i+2;
+                continue;
+            }
+            else if(even==1 && row[i]+1==row[i+1])
+            {
+                i=i+2;
+                continue;
+            }
+
+            for(int j=i+2; j<row.size(); j++)
+            {
+                if(even==0 && row[j]==row[i]-1)
+                {
+                    count++;
+                    swap(row[j], row[i+1]);
+                    break;
+                }
+                else if(even==1 && row[j]==row[i]+1)
+                {
+                    count++;
+                    swap(row[j], row[i+1]);
+                    break;
+                }
+            }
+            i=i+2;
+        }
+        return count;
+    }
+};
+
+// Approach 2 -> 
+
+class Solution {
+public:
+    int minSwapsCouples(vector<int>& row) {
+        int n = row.size();
+        int count = 0;
+        
+        // Create a map to quickly locate positions of people in the row
+        vector<int> position(n);
+        for (int i = 0; i < n; ++i) {
+            position[row[i]] = i;
+        }
+        
+        for (int i = 0; i < n; i += 2) {
+            int x = row[i];
+            int y = x ^ 1;  // y is the expected partner of x
+            
+            if (row[i + 1] != y) { // If the next seat doesn't have x's partner
+                int partnerPosition = position[y];
+                
+                // Swap to make them a couple
+                swap(row[i + 1], row[partnerPosition]);
+                
+                // Update the positions after the swap
+                position[row[partnerPosition]] = partnerPosition;
+                position[row[i + 1]] = i + 1;
+                
+                count++;  // Increment the swap count
+            }
+        }
+        
+        return count;
+    }
+};
